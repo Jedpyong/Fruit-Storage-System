@@ -1,0 +1,8 @@
+schema: ../backend/schema.graphql
+documents: "src/features/**/*.graphql"
+generates:
+  src/features/fruit-storage/api/generated/index.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
