@@ -54,6 +54,7 @@ export class Fruit {
     name: FruitName,
     description: FruitDescription,
     limit: FruitAmount,
+    amount: FruitAmount,
   ): void {
     if (limit.getValue() < 0) {
       throw new Error('Amount must be a positive integer number');
@@ -64,6 +65,7 @@ export class Fruit {
     this.name = name;
     this.description = description;
     this.limitOfFruitToBeStored = limit;
+    this.amount = amount;
   }
 
   store(amount: number): void {

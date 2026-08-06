@@ -79,6 +79,11 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
-    "modulePathIgnorePatterns": ["<rootDir>/dist/"]
+    "modulePathIgnorePatterns": [
+      "<rootDir>/dist/"
+    ],
+    "moduleNameMapper": {
+      "^@modules/(.*)$": "<rootDir>/modules/$1"
+    }
   }
 }

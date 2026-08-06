@@ -3,11 +3,11 @@ import { FruitRepository } from '../repositories/fruit.repository';
 import { FruitAmount } from '../value-objects/fruit-amount.vo';
 import { FruitDescription } from '../value-objects/fruit-description.vo';
 import { FruitName } from '../value-objects/fruit-name.vo';
-import { FruitUniquenessCheckerService } from './fruit-uniqueness-checker.service';
+import { FruitUniquenessChecker } from './fruit-uniqueness-checker.service';
 
 describe('FruitUniquenessChecker', () => {
   let repo: jest.Mocked<FruitRepository>;
-  let checker: FruitUniquenessCheckerService;
+  let checker: FruitUniquenessChecker;
 
   beforeEach(() => {
     repo = {
@@ -16,7 +16,7 @@ describe('FruitUniquenessChecker', () => {
       save: jest.fn(),
       delete: jest.fn(),
     };
-    checker = new FruitUniquenessCheckerService(repo);
+    checker = new FruitUniquenessChecker(repo);
   });
 
   it('returns true when no fruit with that name exists', async () => {

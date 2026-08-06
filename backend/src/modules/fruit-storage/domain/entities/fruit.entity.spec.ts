@@ -151,6 +151,7 @@ describe('Fruit', () => {
       FruitName.create('Lemon'),
       FruitDescription.create('Updated lemon description'),
       FruitAmount.create(15),
+      fruit.getAmount(),
     );
     expect(fruit.getName().getValue()).toBe('Lemon');
     expect(fruit.getDescription().getValue()).toBe('Updated lemon description');
@@ -168,6 +169,7 @@ describe('Fruit', () => {
         FruitName.create(''),
         FruitDescription.create('This is an Orange'),
         FruitAmount.create(15),
+        fruit.getAmount(),
       ),
     ).toThrow('Name must not be empty');
   });
@@ -183,6 +185,7 @@ describe('Fruit', () => {
         FruitName.create('Lemon'),
         FruitDescription.create('Updated lemon with a long description'),
         FruitAmount.create(10),
+        fruit.getAmount(),
       ),
     ).toThrow('Description must not go beyond 30 characters');
   });
@@ -199,6 +202,7 @@ describe('Fruit', () => {
         FruitName.create('Orange'),
         FruitDescription.create('This is an Orange'),
         FruitAmount.create(3),
+        fruit.getAmount(),
       ),
     ).toThrow('New limit cannot be less than the current amount');
   });

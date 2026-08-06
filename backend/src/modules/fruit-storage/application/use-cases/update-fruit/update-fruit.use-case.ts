@@ -1,0 +1,28 @@
+import { Fruit } from '@modules/fruit-storage/domain/entities/fruit.entity';
+import { FruitRepository } from '@modules/fruit-storage/domain/repositories/fruit.repository';
+import { FruitAmount } from '@modules/fruit-storage/domain/value-objects/fruit-amount.vo';
+import { FruitDescription } from '@modules/fruit-storage/domain/value-objects/fruit-description.vo';
+import { FruitName } from '@modules/fruit-storage/domain/value-objects/fruit-name.vo';
+
+export class UpdateFruitUseCase {
+  constructor(private readonly fruitRepository: FruitRepository) {}
+
+  async execute(props: {
+    name: string;
+    description: string;
+    limitOfFruitToBeStored: number;
+  }) {
+    const fruit = await this.fruitRepository.findByName(props.name);
+    if (!fruit) {
+      throw new Error('Fruit not found');
+    }
+    fruit.update(
+      FruitName.create(props.name),
+      FruitDescription.create(props.description),
+      FruitAmount.create(props.limitOfFruitToBeStored),
+      fruit.getAmount(),
+    );
+
+    await this.fruitRepository.save(fruit);
+  }
+}

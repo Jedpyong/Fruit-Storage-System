@@ -1,6 +1,6 @@
 import { FruitRepository } from '../repositories/fruit.repository';
 
-export class FruitUniquenessCheckerService {
+export class FruitUniquenessChecker {
   constructor(private readonly fruitRepository: FruitRepository) {}
 
   async isUnique(name: string): Promise<boolean> {
