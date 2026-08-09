@@ -1,8 +1,12 @@
+import { AggregateRoot } from '@shared/domain/aggregate-root';
 import { FruitAmount } from '../value-objects/fruit-amount.vo';
 import { FruitDescription } from '../value-objects/fruit-description.vo';
 import { FruitName } from '../value-objects/fruit-name.vo';
+import { FruitCreatedEvent } from '../events/fruit-created.event';
+import { FruitUpdatedEvent } from '../events/fruit-updated.event';
+import { FruitDeletedEvent } from '../events/fruit-deleted.event';
 
-export class Fruit {
+export class Fruit extends AggregateRoot {
   private name: FruitName;
   private description: FruitDescription;
   private amount: FruitAmount;
@@ -14,6 +18,7 @@ export class Fruit {
     limitOfFruitToBeStored: FruitAmount,
     amount: FruitAmount,
   ) {
+    super();
     this.name = name;
     this.description = description;
     this.amount = amount;
@@ -28,12 +33,14 @@ export class Fruit {
     if (limitOfFruitToBeStored.getValue() < 0) {
       throw new Error('Amount must be a positive integer number');
     }
-    return new Fruit(
+    const fruit = new Fruit(
       name,
       description,
       limitOfFruitToBeStored,
       FruitAmount.create(0),
     );
+    fruit.addDomainEvent(new FruitCreatedEvent(this.name));
+    return fruit;
   }
 
   static reconstitute(props: {
@@ -66,6 +73,7 @@ export class Fruit {
     this.description = description;
     this.limitOfFruitToBeStored = limit;
     this.amount = amount;
+    this.addDomainEvent(new FruitUpdatedEvent(this.name.getValue()));
   }
 
   store(amount: number): void {
@@ -93,7 +101,12 @@ export class Fruit {
   }
 
   canBeDeleted(forceDelete: boolean = false): boolean {
-    return forceDelete || this.amount.getValue() === 0;
+    const deleted = forceDelete || this.amount.getValue() === 0;
+    if (!deleted) {
+      throw new Error('Cannot delete fruit with remaining stock');
+    }
+    this.addDomainEvent(new FruitDeletedEvent(this.name.getValue()));
+    return deleted;
   }
 
   getName(): FruitName {
