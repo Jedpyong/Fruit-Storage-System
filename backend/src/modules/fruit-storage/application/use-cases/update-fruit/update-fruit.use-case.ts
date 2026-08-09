@@ -11,7 +11,7 @@ export class UpdateFruitUseCase {
     name: string;
     description: string;
     limitOfFruitToBeStored: number;
-  }) {
+  }): Promise<Fruit> {
     const fruit = await this.fruitRepository.findByName(props.name);
     if (!fruit) {
       throw new Error('Fruit not found');
@@ -24,5 +24,6 @@ export class UpdateFruitUseCase {
     );
 
     await this.fruitRepository.save(fruit);
+    return fruit;
   }
 }
