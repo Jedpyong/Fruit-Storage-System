@@ -1,6 +1,5 @@
-import { OnModuleInit } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import Module from 'module';
 import { OutboxRelay } from './infrastructure/messaging/outbox-relay.cron';
 import {
   FruitDocument,
