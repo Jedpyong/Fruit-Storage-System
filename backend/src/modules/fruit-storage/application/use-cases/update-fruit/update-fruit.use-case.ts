@@ -3,9 +3,14 @@ import { FruitRepository } from '@modules/fruit-storage/domain/repositories/frui
 import { FruitAmount } from '@modules/fruit-storage/domain/value-objects/fruit-amount.vo';
 import { FruitDescription } from '@modules/fruit-storage/domain/value-objects/fruit-description.vo';
 import { FruitName } from '@modules/fruit-storage/domain/value-objects/fruit-name.vo';
+import { Inject, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UpdateFruitUseCase {
-  constructor(private readonly fruitRepository: FruitRepository) {}
+  constructor(
+    @Inject('FruitRepository')
+    private readonly fruitRepository: FruitRepository,
+  ) {}
 
   async execute(props: {
     name: string;
