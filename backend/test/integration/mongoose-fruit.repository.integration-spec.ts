@@ -1,4 +1,4 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryReplSet } from 'mongodb-memory-server';
 import mongoose, { Model } from 'mongoose';
 import {
   FruitDocument,
@@ -9,29 +9,43 @@ import { Fruit } from '@modules/fruit-storage/domain/entities/fruit.entity';
 import { FruitName } from '@modules/fruit-storage/domain/value-objects/fruit-name.vo';
 import { FruitDescription } from '@modules/fruit-storage/domain/value-objects/fruit-description.vo';
 import { FruitAmount } from '@modules/fruit-storage/domain/value-objects/fruit-amount.vo';
+import { OutboxRepository } from '@modules/fruit-storage/infrastructure/persistence/mongoose/outbox.repository';
 
 describe('MongooseFruitRepository Integration', () => {
-  let mongod: MongoMemoryServer;
+  let mongod: MongoMemoryReplSet;
   let model: Model<FruitDocument>;
   let repository: MongooseFruitRepository;
+  let mockOutboxRepo: jest.Mocked<OutboxRepository>;
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
+    mongod = await MongoMemoryReplSet.create({
+      replSet: { count: 1 },
+    });
     await mongoose.connect(mongod.getUri());
     model = mongoose.model<FruitDocument>('Fruit', FruitSchema);
   });
 
   afterEach(async () => {
     await model.deleteMany({});
+    jest.clearAllMocks();
   });
 
   afterAll(async () => {
+    await mongoose.connection.close();
     await mongoose.disconnect();
     await mongod.stop();
   });
 
   beforeEach(() => {
-    repository = new MongooseFruitRepository(model);
+    mockOutboxRepo = {
+      saveMessage: jest.fn().mockResolvedValue(undefined),
+    } as unknown as jest.Mocked<OutboxRepository>;
+
+    repository = new MongooseFruitRepository(
+      model,
+      mongoose.connection,
+      mockOutboxRepo,
+    );
   });
 
   it('saves a fruit and retrieves it by name', async () => {
