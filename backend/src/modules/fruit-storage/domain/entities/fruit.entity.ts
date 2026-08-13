@@ -36,7 +36,7 @@ export class Fruit extends AggregateRoot {
       limitOfFruitToBeStored,
       FruitAmount.create(0),
     );
-    fruit.addDomainEvent(new FruitCreatedEvent(this.name));
+    fruit.addDomainEvent(new FruitCreatedEvent(name.getValue()));
     return fruit;
   }
 
@@ -67,7 +67,7 @@ export class Fruit extends AggregateRoot {
     this.description = description;
     this.limitOfFruitToBeStored = limitOfFruitToBeStored;
     this.amount = amount;
-    this.addDomainEvent(new FruitUpdatedEvent(this.name.getValue()));
+    this.addDomainEvent(new FruitUpdatedEvent(name.getValue()));
   }
 
   store(amount: number): void {
