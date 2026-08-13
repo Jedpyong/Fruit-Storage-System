@@ -1,10 +1,10 @@
 import { FruitName } from './fruit-name.vo';
 
 describe('FruitName', () => {
-  it('create a valid name', () => {
+  it('create a valid and normalized name', () => {
     const rawInput = 'Apple';
     const name = FruitName.create(rawInput);
-    expect(name.getValue()).toBe('Apple');
+    expect(name.getValue()).toBe('apple');
   });
 
   it('throws an error when creating a name with empty string', () => {

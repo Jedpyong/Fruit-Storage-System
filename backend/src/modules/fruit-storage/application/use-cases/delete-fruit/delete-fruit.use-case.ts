@@ -1,7 +1,12 @@
 import { FruitRepository } from '@modules/fruit-storage/domain/repositories/fruit.repository';
+import { Inject, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class DeleteFruitUseCase {
-  constructor(private readonly fruitRepository: FruitRepository) {}
+  constructor(
+    @Inject('FruitRepository')
+    private readonly fruitRepository: FruitRepository,
+  ) {}
 
   async execute(props: { name: string; forceDelete: boolean }): Promise<void> {
     const fruit = await this.fruitRepository.findByName(props.name);

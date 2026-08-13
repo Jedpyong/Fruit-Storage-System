@@ -116,12 +116,10 @@ describe('Fruit', () => {
       FruitDescription.create('This is a Lemon'),
       FruitAmount.create(10),
     );
-    expect(() => fruit.remove(-5)).toThrow(
-      'Amount must be a positive integer number',
-    );
+    expect(() => fruit.remove(-5)).toThrow('Amount to remove must be positive');
   });
 
-  it('blocks a deletion for a fruit entity with existing non-zero amount', () => {
+  it('throws an error when deleting a fruit entity with existing non-zero amount', () => {
     const fruit = Fruit.createNew(
       FruitName.create('Lemon'),
       FruitDescription.create('This is a Lemon'),

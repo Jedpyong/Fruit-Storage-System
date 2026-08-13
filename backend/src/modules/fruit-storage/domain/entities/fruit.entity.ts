@@ -30,9 +30,6 @@ export class Fruit extends AggregateRoot {
     description: FruitDescription,
     limitOfFruitToBeStored: FruitAmount,
   ): Fruit {
-    if (limitOfFruitToBeStored.getValue() < 0) {
-      throw new Error('Amount must be a positive integer number');
-    }
     const fruit = new Fruit(
       name,
       description,
@@ -60,18 +57,15 @@ export class Fruit extends AggregateRoot {
   update(
     name: FruitName,
     description: FruitDescription,
-    limit: FruitAmount,
+    limitOfFruitToBeStored: FruitAmount,
     amount: FruitAmount,
   ): void {
-    if (limit.getValue() < 0) {
-      throw new Error('Amount must be a positive integer number');
-    }
-    if (limit.getValue() < this.amount.getValue()) {
+    if (limitOfFruitToBeStored.getValue() < this.amount.getValue()) {
       throw new Error('New limit cannot be less than the current amount');
     }
     this.name = name;
     this.description = description;
-    this.limitOfFruitToBeStored = limit;
+    this.limitOfFruitToBeStored = limitOfFruitToBeStored;
     this.amount = amount;
     this.addDomainEvent(new FruitUpdatedEvent(this.name.getValue()));
   }
@@ -83,9 +77,6 @@ export class Fruit extends AggregateRoot {
     ) {
       throw new Error('Cannot store more than the storage limit');
     }
-    if (amount < 0) {
-      throw new Error('Amount must be a positive integer number');
-    }
 
     this.amount = FruitAmount.create(this.amount.getValue() + amount);
   }
@@ -95,17 +86,16 @@ export class Fruit extends AggregateRoot {
       throw new Error('Cannot remove more than the current amount');
     }
     if (amount < 0) {
-      throw new Error('Amount must be a positive integer number');
+      throw new Error('Amount to remove must be positive');
     }
     this.amount = FruitAmount.create(this.amount.getValue() - amount);
   }
 
   canBeDeleted(forceDelete: boolean = false): boolean {
     const deleted = forceDelete || this.amount.getValue() === 0;
-    if (!deleted) {
-      throw new Error('Cannot delete fruit with remaining stock');
+    if (deleted) {
+      this.addDomainEvent(new FruitDeletedEvent(this.name.getValue()));
     }
-    this.addDomainEvent(new FruitDeletedEvent(this.name.getValue()));
     return deleted;
   }
 
