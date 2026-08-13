@@ -7,6 +7,7 @@ export class FruitAmount {
 
   public static create(value: number): FruitAmount {
     if (!Number.isInteger(value) || value < 0) {
+      console.log('Invalid amount value:', value);
       throw new Error('Amount must be a positive integer number');
     }
     return new FruitAmount(value);
